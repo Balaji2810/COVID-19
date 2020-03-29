@@ -1,0 +1,105 @@
+{% extends "body.html" %}
+
+{% block body %}
+<h2 class="ui header ui olive ribbon label">Report</h2><span class="ui right floated header">  (<a target="_blank" href="https://www.worldometers.info/">Source</a>)</span>
+
+<br>
+<br>
+
+
+
+<div class="ui statistics">
+
+  <table id="report_table" class="ui center aligned table">
+    <thead>
+      <tr>
+        <th>
+          <div class="statistic">
+            <div class="text value">
+              Recorded Cases
+            </div>
+          </div>
+          <div class="yellow statistic">
+          <div class="value">
+            {{total_cases}}
+          </div>
+          <div class="label">
+            Total Coronavirus Cases
+          </div>
+        </div>
+      </th>
+      <th>
+        <div class="statistic">
+          <div class="text value">
+            Active Cases
+          </div>
+        </div>
+        <div class="orange statistic">
+          <div class="value">
+            {{active_cases}}
+          </div>
+          <div class="label">
+            Currently Infected Patients
+          </div>
+        </div>
+      </th>
+      <th>
+        <div class="statistic">
+          <div class="text value">
+            Closed Cases
+          </div>
+        </div>
+        <div class="ui center aligned two column doubling stackable grid">
+          <div class="column">
+            <div class="red statistic center aligned">
+              <div class="value">
+                {{total_death}}
+              </div>
+              <div class="label">
+                Deaths
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="green statistic center aligned">
+              <div class="value">
+                {{total_recovered}}
+              </div>
+              <div class="label">
+                Recovered
+              </div>
+            </div>
+          </div>
+        </div>
+      </th>
+    </tr></thead>
+  </table>
+</div>
+
+<br>
+<br>
+<br>
+
+<table id="report_table_data" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Confirmed</th>
+            <th>Recovered</th>
+            <th>Deaths</th>
+        </tr>
+    </thead>
+    <tbody>
+      {%for i in countries%}
+            <tr>
+                <td>{{i.0}}</td>
+                <td>{{i.1}}</td>
+                <td>{{i.2}}</td>
+                <td>{{i.3}}</td>
+            </tr>
+      {%endfor%}
+    </tbody>
+</table>
+
+
+{% endblock %}

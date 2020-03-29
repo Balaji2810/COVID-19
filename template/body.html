@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>COVID-19 Analysis</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="https://kit.fontawesome.com/908bad7a25.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.semanticui.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/se/jq-3.3.1/jszip-2.5.0/dt-1.10.20/af-2.3.4/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/b-print-1.6.1/cr-1.5.2/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/rr-1.2.6/sc-2.0.1/sp-1.0.1/sl-1.3.1/datatables.min.css"/>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/se/jq-3.3.1/jszip-2.5.0/dt-1.10.20/af-2.3.4/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/b-print-1.6.1/cr-1.5.2/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/rr-1.2.6/sc-2.0.1/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+
+    <style>
+    #lab_social_icon_footer {
+      padding: 40px 0;
+      background-color: #f2f2f2;
+    }
+
+    #lab_social_icon_footer a {
+      color: #333;
+    }
+
+    #lab_social_icon_footer .social:hover {
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -o-transform: scale(1.1);
+    }
+
+    #lab_social_icon_footer .social {
+      -webkit-transform: scale(0.8);
+      /* Browser Variations: */
+
+      -moz-transform: scale(0.8);
+      -o-transform: scale(0.8);
+      -webkit-transition-duration: 0.5s;
+      -moz-transition-duration: 0.5s;
+      -o-transition-duration: 0.5s;
+    }
+    /*
+    Multicoloured Hover Variations
+    */
+
+    #lab_social_icon_footer #social-fb:hover {
+      color: #3B5998;
+    }
+
+    #lab_social_icon_footer #social-insta:hover {
+      color: #ff3385;
+    }
+
+    #lab_social_icon_footer #social-git:hover {
+      color: #8600b3;
+    }
+
+    #lab_social_icon_footer #social-hr:hover {
+      color: #339933;
+    }
+
+
+    .content {
+  flex: 1 0 auto;
+}
+.footer {
+  flex-shrink: 0;
+}
+
+svg.ct-chart-bar, svg.ct-chart-line{
+	overflow: visible;
+}
+.ct-label.ct-label.ct-horizontal.ct-end {
+  position: relative;
+  justify-content: flex-end;
+  text-align: right;
+  transform-origin: 100% 0;
+  transform: translate(-100%) rotate(-90deg);
+  white-space:nowrap;
+}
+
+.ct-chart .ct-series.ct-series-a .ct-line {
+  stroke: #cc3300;
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+
+.ct-chart .ct-series.ct-series-b .ct-line {
+  stroke: #cc3300;
+  stroke-width: 5px;
+  stroke-dasharray: 5px 2px;
+}
+    </style>
+
+</head>
+<body>
+  <br>
+  {% include './nav/navbar.html' %}
+<div class="content">
+  <div class="ui  container  segment">
+  {% block body %}
+    <br>
+    <h2 class="ui header ui blue ribbon label">COVID-19</h2><span class="ui right floated header">(<a target="_blank" href="https://en.wikipedia.org/wiki/Coronavirus_disease_2019">Source</a>)</span>
+    <div class="ui compact message">
+      <p>Coronavirus disease 2019 (COVID-19) is an infectious disease caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2). The disease was first identified in 2019 in Wuhan, the capital of China's Hubei province, and has since spread globally, resulting in the 2019–2020 coronavirus pandemic. Common symptoms include fever, cough, and shortness of breath. Other symptoms may include muscle pain, sputum production, diarrhea, sore throat, abdominal pain, and loss of smell or taste. While the majority of cases result in mild symptoms, some progress to pneumonia and multi-organ failure. As of March 25, 2020, the overall rate of deaths per number of diagnosed cases is 4.5 percent; ranging from 0.2 percent to 15 percent according to age group and other health problems.</p>
+      <p>The virus is mainly spread during close contact and via respiratory droplets produced when people cough or sneeze. Respiratory droplets may be produced during breathing but the virus is not considered airborne. People may also catch COVID-19 by touching a contaminated surface and then their face. It is most contagious when people are symptomatic, although spread may be possible before symptoms appear. The virus can live on surfaces up to 72 hours. Time from exposure to onset of symptoms is generally between two and fourteen days, with an average of five days. The standard method of diagnosis is by reverse transcription polymerase chain reaction (rRT-PCR) from a nasopharyngeal swab. The infection can also be diagnosed from a combination of symptoms, risk factors and a chest CT scan showing features of pneumonia.</p>
+      <p>Recommended measures to prevent infection include frequent hand washing, social distancing (maintaining physical distance from others, especially from those with symptoms), covering coughs and sneezes with a tissue or inner elbow, and keeping unwashed hands away from the face. The use of masks is recommended by some national health authorities for those who suspect they have the virus and their caregivers, but not for the general public, although simple cloth masks may be used by those who desire them. There is no vaccine or specific antiviral treatment for COVID-19. Management involves treatment of symptoms, supportive care, isolation, and experimental measures.<p>
+    </div>
+    <br>
+    <h2 class="ui header ui orange ribbon label">Signs and Symptoms</h2><span class="ui right floated header"> (<a target="_blank" href="https://en.wikipedia.org/wiki/Coronavirus_disease_2019#Signs_and_symptoms">Source</a>)</span>
+    <div class="ui compact message">
+      <p>Those infected with the virus may be asymptomatic or develop flu-like symptoms, including fever, cough, fatigue, and shortness of breath. Emergency symptoms include difficulty breathing, persistent chest pain or pressure, confusion, difficulty waking, and bluish face or lips; immediate medical attention is advised if these symptoms are present. Less commonly, upper respiratory symptoms, such as sneezing, runny nose, or sore throat may be seen. Symptoms such as nausea, vomiting, and diarrhea have been observed in varying percentages. Some cases in China initially presented only with chest tightness and palpitations. Loss of the sense of smell and distortion of the sense of taste are reportedly common symptoms among those who are otherwise asymptomatic. In some, the disease may progress to pneumonia, multi-organ failure, and death. In those who develop severe symptoms, time from symptom onset to needing mechanical ventilation is typically 8 days.</p>
+      <p>As is common with infections, there is a delay between the moment when a person is infected with the virus and the time when they develop symptoms. This is called the incubation period. The incubation period for COVID-19 is typically five to six days but may range from two to 14 days. 97.5% of people who develop symptoms will do so within 11.5 days of infection.</p>
+    </div>
+    <br>
+    <h2 class="ui header ui red ribbon label">Cause</h2><span class="ui right floated header">  (<a target="_blank" href="https://en.wikipedia.org/wiki/Coronavirus_disease_2019#Cause">Source</a>)</span>
+    <div class="ui compact message">
+      <p>The disease is caused by the virus severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), previously referred to as the 2019 novel coronavirus (2019-nCoV). It is primarily spread between people via respiratory droplets from coughs and sneezes. A study investigating the rate of decay of the virus found no viable viruses after four hours on copper, 24 hours on cardboard, 72 hours on stainless steel, and 72 hours on plastic. However, detection rates did not reach 100% and varied between surface type (limit of detection was 3.33×100.5 TCID50 per liter of air for aerosols, 100.5 TCID50 per milliliter of medium for plastic, steel, and cardboard, and 101.5 TCID50 per milliliter of medium for copper). Estimation of the rate of decay with a Bayesian regression model suggests that viruses may remain viable up to 18 hours on copper, 55 hours on cardboard, 90 hours on stainless steel, and over 100 hours on plastic. The virus remained viable in aerosols throughout the time of the experiment (three hours). The virus has also been found in faeces, and transmission through faeces is being researched.</p>
+      <p>The lungs are the organs most affected by COVID-19 because the virus accesses host cells via the enzyme ACE2, which is most abundant in the type II alveolar cells of the lungs. The virus uses a special surface glycoprotein called a "spike" (peplomer) to connect to ACE2 and enter the host cell. The density of ACE2 in each tissue correlates with the severity of the disease in that tissue and some have suggested that decreasing ACE2 activity might be protective, though another view is that increasing ACE2 using angiotensin II receptor blocker medications could be protective and that these hypotheses need to be tested. As the alveolar disease progresses, respiratory failure might develop and death may follow.</p>
+      <p>The virus also affects gastrointestinal organs as ACE2 is abundantly expressed in the glandular cells of gastric, duodenal and rectal epithelium as well as endothelial cells and enterocytes of the small intestine. The virus has been found in the faeces of as many as 53% of hospitalised people and more anal swab positives have been found than oral swab positives in the later stages of infection. The virus was found in faeces from 1 to 12 days and 17% of patients continued to present the virus in faeces after no longer presenting them in respiratory samples, indicating that the viral gastrointestinal infection and the potential fecal-oral transmission can last even after viral clearance in the respiratory tract. Reoccurrence of the virus has also been detected through anal swabs suggesting a shift from more oral positive during the early stages of the disease to more anal positive during later periods.</p>
+      <p>The virus is thought to be natural and have an animal origin, through spillover infection. The origin is unknown but by December 2019 the spread of infection was almost entirely driven by human-to-human transmission. The earliest known infection occurred on 17 November 2019 in Wuhan, China.</p>
+    </div>
+    <br>
+    <h2 class="ui header ui green ribbon label">Prevention</h2><span class="ui right floated header">  (<a target="_blank" href="https://en.wikipedia.org/wiki/Coronavirus_disease_2019#Prevention">Source</a>)</span>
+    <div class="ui compact message">
+      <p>Preventive measures to reduce the chances of infection include staying at home, avoiding crowded places, washing hands with soap and warm water often and for at least 20 seconds, practicing good respiratory hygiene and avoiding touching the eyes, nose, or mouth with unwashed hands. The CDC recommends covering the mouth and nose with a tissue when coughing or sneezing and recommends using the inside of the elbow if no tissue is available. They also recommend proper hand hygiene after any cough or sneeze. Social distancing strategies aim to reduce contact of infected persons with large groups by closing schools and workplaces, restricting travel, and canceling mass gatherings. Social distancing also includes that people stay at least 6 feet apart (about 1.80 meters).</p>
+      <p>Because a vaccine against SARS-CoV-2 is not expected to become available until 2021 at the earliest, a key part of managing the COVID-19 pandemic is trying to decrease the epidemic peak, known as flattening the epidemic curve through various measures seeking to reduce the rate of new infections. Slowing the infection rate helps decrease the risk of health services being overwhelmed, allowing for better treatment of current cases, and delaying additional cases until therapeutics or a vaccine become available.</p>
+      <p>According to the WHO, the use of masks is recommended only if a person is coughing or sneezing or when one is taking care of someone with a suspected infection. Some countries also recommend healthy individuals to wear face masks, particularly China, Hong Kong and Thailand. In order to meet the need for masks, the WHO estimates that global production will need to increase by 40%. Hoarding and speculation have worsened the problem, with the price of masks increasing sixfold, N95 respirators tripled, and gowns doubled. Some health experts consider wearing non-medical-grade masks and other face coverings like scarves or bandanas a good way to prevent people from touching their mouths and noses, even if non-medical coverings would not protect against a direct sneeze or cough from an infected person.</p>
+      <p>Those diagnosed with COVID-19 or who believe they may be infected are advised by the CDC to stay home except to get medical care, call ahead before visiting a healthcare provider, wear a face mask before entering the healthcare provider's office and when in any room or vehicle with another person, cover coughs and sneezes with a tissue, regularly wash hands with soap and water, and avoid sharing personal household items. The CDC also recommends that individuals wash hands often with soap and water for at least 20 seconds, especially after going to the toilet or when hands are visibly dirty, before eating and after blowing one's nose, coughing, or sneezing. It further recommends using an alcohol-based hand sanitizer with at least 60% alcohol, but only when soap and water are not readily available.</p>
+      <p>For areas where commercial hand sanitizers are not readily available, WHO provides two formulations for local production. In these formulations, the antimicrobial activity arises from ethanol or isopropanol. Hydrogen peroxide is used to help eliminate bacterial spores in the alcohol; it is "not an active substance for hand antisepsis". Glycerol is added as a humectant.</p>
+    </div>
+  {% endblock %}
+  
+  </div>
+</div>
+  <footer class="footer">
+  {% include './footer.html' %}
+  </footer>
+<script>
+$(document).ready(function() {
+    $('#report_table_data').DataTable( {
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+    } );
+} );
+
+
+
+
+
+function graph()
+{
+  code = document.getElementById("countryname").value;
+  days = document.getElementById("days").value;
+  if(days=="")
+  {
+    days="0";
+  }
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", "/growth_chart/"+code+"/"+days, false);
+  xhttp.send();
+  v = JSON.parse(xhttp.responseText);
+  console.log(v)
+  document.getElementById("total").innerHTML=v["total"];
+  var data = {
+    labels: v["date"],
+    series: [
+      v["cases"],v["growth"]
+    ]
+  };
+
+  var options = {
+  height:400,
+  seriesBarDistance: 100,
+      axisY : {
+          low: 1.2,
+          referenceValue: 3,
+          scaleMinSpace: 40
+        }
+};
+
+  /* Initialize the chart with the above settings */
+  new Chartist.Line('#my-chart', data,options);
+}
+
+</script>
+
+</body>
+</html>

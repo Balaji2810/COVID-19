@@ -1,0 +1,4 @@
+$(function () {
+
+    $("#adminViewSubmit").click();
+});
