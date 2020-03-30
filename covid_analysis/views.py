@@ -205,4 +205,87 @@ def report(req):
 
 	return render(req,"report.html",{"total_cases":f"{int(l[-1][1]):,d}","total_death":f"{int(l[-1][3]):,d}","total_recovered":f"{int(l[-1][5]):,d}","active_cases":f"{int(l[-1][6]):,d}","serious_critical":f"{int(l[-1][7]):,d}","countries":out})
 
+
+
+
+def India_case_prediction(days):
+
+    #Packages
+    from statsmodels.tsa.api import SimpleExpSmoothing, Holt, ExponentialSmoothing #To use Simple, Exponential and Holt Smoothing
+    from statsmodels.tsa.seasonal import seasonal_decompose #To perform seasonal decompositionimport json
+    import requests
+    import pandas as pd
+    import numpy as np
+    import json
+    import matplotlib.pyplot as plt
+    import datetime
+    from datetime import date, timedelta
+    import matplotlib.dates as mdates
+
+    # To avoid printing warnings
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    # Typecasting "days" to INT
+    days = int(days)
+
+    # Getting json file and converting to dataframe
+    data = requests.get("https://opendata.ecdc.europa.eu/covid19/casedistribution/json/")
+    data = json.loads(data.text)["records"]
+    df = pd.DataFrame(data)
+
+    # Extracting INDIA's data and making date as index of dataframe for training purpose
+    India_df = df["countryterritoryCode"] == "IND"
+    India_df = df[India_df]
+    India_df = India_df.iloc[::-1]
+    India_df.reset_index(drop=True, inplace=True)
+    India_df['dateRep'] = pd.to_datetime(India_df.dateRep,format='%d/%m/%Y')
+    India_df.index = India_df['dateRep']
+
+
+    #Preparing training and predicition dataframes based on current date
+        # Have taken from March 15, as previous days mostly had 0 cases
+    CurrentDate = date.today()
+    India_df_train=India_df.ix['2020-03-15' : CurrentDate - datetime.timedelta(1)]
+
+    India_df_predict = pd.DataFrame()
+    India_df_predict['dateRep'] = pd.date_range(start = CurrentDate,
+                                                end = CurrentDate + datetime.timedelta(days),
+                                                freq ='D')
+
+    India_df_predict.index = India_df_predict['dateRep']
+
+
+
+    #Holt-Winters model for prediction
+    fit2 = ExponentialSmoothing(np.asarray((India_df_train['cases']).astype(str).astype(float)),
+                                          seasonal_periods=7 ,trend='add', seasonal='add').fit()
+
+    #Predicting target column for given number of days
+    India_df_predict['Exp'] = fit2.forecast(days + 1)
+
+    #Training and Predicted dataframes displayed
+    print(India_df_train)
+    print(India_df_predict)
+
+
+    
+    #Plotting graph
+    plt.figure(figsize=(16, 8))
+    plt.plot(India_df_train['cases'].astype(str).astype(float), color='blue', lw=2)
+    plt.plot(India_df_predict['Exp'], color='orange', lw=2)
+    plt.xlabel("Day_Count")
+    plt.ylabel("No of cases")
+    x1,x2,y1,y2 = plt.axis()
+    plt.axis((x1,x2,0,250))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
+    plt.gcf().autofmt_xdate()
+    plt.show()
+
+
+#Sample call for 15 days
+India_case_prediction(15)
+
+
 #"$%.2f"|format(543921.9354)
