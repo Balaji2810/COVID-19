@@ -1,0 +1,61 @@
+{% extends "body.html" %}
+
+{% block body %}
+<h2 class="ui header ui teal ribbon label">Holt Winter's</h2><span class="ui right floated header"> Special Contributor (<a target="_blank" href="https://github.com/SK7here">Kailash S</a>)</span>
+
+<br>
+<br>
+<div class="ui three column grid">
+  <div class="column">
+    <div class="ui input ">
+    <input id="countryname" autoComplete="on" list="code" placeholder="Country Name"/>
+    </div>
+    <datalist  id="code"  >
+    <option value="">Select</option>
+    {%for i in data_growth%}
+          <option value="{{i.1}}">
+    {%endfor%}
+  </datalist ></div>
+  <div class="column">
+    <div class="ui input ">
+      <input id="days" type="text" placeholder="for the next ____ days">
+    </div>
+</div>
+  <div class="column"><button onclick="graph_Holt_Winters()" class="ui teal basic button">Calculate</button></div>
+</div>
+<br>
+<br>
+
+<h2 class="ui header">
+  Note :
+</h2>
+<div class="ui bulleted list">
+  <div class="item">Enter '0' days to view the current status.</div>
+  <div class="item">The graph based on the Holt Winter's model.</div>
+  <div class="item">The graph is ploted from the first case which has been recorded.</div>
+  <div class="item">The value is not accurate, if we are not taking any steps then this will be the case.</div>
+</div>
+
+<br>
+<br>
+
+<div class="ui statistics">
+  <div class="red statistic">
+    <div class="label">
+      The Total affected people will be
+    </div>
+    <div id="total" class="value">
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="my-chart" class="ct-chart ct-square" ></div>
+
+
+
+
+
+{% endblock %}

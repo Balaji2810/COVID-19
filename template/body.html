@@ -143,13 +143,15 @@ svg.ct-chart-bar, svg.ct-chart-line{
       <p>For areas where commercial hand sanitizers are not readily available, WHO provides two formulations for local production. In these formulations, the antimicrobial activity arises from ethanol or isopropanol. Hydrogen peroxide is used to help eliminate bacterial spores in the alcohol; it is "not an active substance for hand antisepsis". Glycerol is added as a humectant.</p>
     </div>
   {% endblock %}
-  
+
   </div>
 </div>
   <footer class="footer">
   {% include './footer.html' %}
   </footer>
 <script>
+
+
 $(document).ready(function() {
     $('#report_table_data').DataTable( {
       dom: 'Bfrtip',
@@ -162,6 +164,40 @@ $(document).ready(function() {
 
 
 
+function graph_Holt_Winters()
+{
+  code = document.getElementById("countryname").value;
+  days = document.getElementById("days").value;
+  if(days=="")
+  {
+    days="0";
+  }
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", "/growth_chart_Holt_Winters/"+code+"/"+days, false);
+  xhttp.send();
+  v = JSON.parse(xhttp.responseText);
+  console.log(v)
+  document.getElementById("total").innerHTML=v["total"];
+  var data = {
+    labels: v["date"],
+    series: [
+      v["cases"],v["growth"]
+    ]
+  };
+
+  var options = {
+  height:400,
+  seriesBarDistance: 100,
+      axisY : {
+          low: 1.2,
+          referenceValue: 3,
+          scaleMinSpace: 40
+        }
+};
+
+  /* Initialize the chart with the above settings */
+  new Chartist.Line('#my-chart', data,options);
+}
 
 function graph()
 {

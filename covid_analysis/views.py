@@ -4,6 +4,19 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import datetime
+
+#Packages
+from statsmodels.tsa.api import SimpleExpSmoothing, Holt, ExponentialSmoothing #To use Simple, Exponential and Holt Smoothing
+from statsmodels.tsa.seasonal import seasonal_decompose #To perform seasonal decompositionimport json
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import date, timedelta
+import matplotlib.dates as mdates
+
+# To avoid printing warnings
+import warnings
+
 # Create your views here.
 
 def index(req):
@@ -209,83 +222,73 @@ def report(req):
 
 
 def case_prediction(country,days):
+	warnings.filterwarnings("ignore")
+	days = int(days)
+	data = requests.get("https://opendata.ecdc.europa.eu/covid19/casedistribution/json/")
+	data = json.loads(data.text)["records"]
+	df = pd.DataFrame(data)
+	Country_df = df["countriesAndTerritories"] == country
+	Country_df = df[Country_df]
+	Country_df = Country_df.iloc[::-1]
+	Country_df.reset_index(drop=True, inplace=True)
+	Country_df['dateRep'] = pd.to_datetime(Country_df.dateRep,format='%d/%m/%Y')
+	Country_df.index = Country_df['dateRep']
+	CurrentDate = date.today()
+	Country_df_train=Country_df.loc[datetime.datetime.now()-datetime.timedelta(30) : CurrentDate - datetime.timedelta(1)]
+	Country_df_predict = pd.DataFrame()
+	Country_df_predict['dateRep'] = pd.date_range(start = CurrentDate,end = CurrentDate + datetime.timedelta(days),freq ='D')
+	Country_df_predict.index = Country_df_predict['dateRep']
+	fit2 = ExponentialSmoothing(np.asarray((Country_df_train['cases']).astype(str).astype(float)),seasonal_periods=7 ,trend='add', seasonal='add').fit()
+	Country_df_predict['Exp'] = fit2.forecast(days)
+	print("-------------",type(Country_df_predict))
+	print(Country_df_predict["Exp"])
+	print("\n\n\n\n\n\n\n")
+	Country_df_predict = map(int,list(Country_df_predict["Exp"]))
+	return (Country_df_predict)
 
-    #Packages
-    from statsmodels.tsa.api import SimpleExpSmoothing, Holt, ExponentialSmoothing #To use Simple, Exponential and Holt Smoothing
-    from statsmodels.tsa.seasonal import seasonal_decompose #To perform seasonal decompositionimport json
-    import requests
-    import pandas as pd
-    import numpy as np
-    import json
-    import matplotlib.pyplot as plt
-    import datetime
-    from datetime import date, timedelta
-    import matplotlib.dates as mdates
+def growth_Holt_Winters(req):
+	data = requests.get("https://opendata.ecdc.europa.eu/covid19/casedistribution/json/");
+	data = json.loads(data.text)["records"]
+	lds=[]
+	for i in data:
+		if (i["countryterritoryCode"],i["countriesAndTerritories"]) not in lds:
+			lds.append((i["countryterritoryCode"],i["countriesAndTerritories"]))
 
-    # To avoid printing warnings
-    import warnings
-    warnings.filterwarnings("ignore")
+	return render(req,"growth_holt_winters.html",{"data_growth":lds})
 
-    # Typecasting "days" to INT
-    days = int(days)
+def growth_chart_Holt_Winters(req,code,days):
+	data = requests.get("https://opendata.ecdc.europa.eu/covid19/casedistribution/json/");
+	data = json.loads(data.text)["records"]
+	cases = []
+	date = []
+	growth = []
+	avg=0
+	ch=0
+	maxvalue=0
+	for i in data[::-1]:
+		if(i["countriesAndTerritories"]==code and int(i["cases"])>0):
+			ch=1
 
-    # Getting json file and converting to dataframe
-    data = requests.get("https://opendata.ecdc.europa.eu/covid19/casedistribution/json/")
-    data = json.loads(data.text)["records"]
-    df = pd.DataFrame(data)
-
-    # Extracting INDIA's data and making date as index of dataframe for training purpose
-    Country_df = df["countriesAndTerritories"] == country
-    Country_df = df[Country_df]
-    Country_df = Country_df.iloc[::-1]
-    Country_df.reset_index(drop=True, inplace=True)
-    Country_df['dateRep'] = pd.to_datetime(Country_df.dateRep,format='%d/%m/%Y')
-    Country_df.index = Country_df['dateRep']
-
-
-    #Preparing training and predicition dataframes based on current date
-        # Have taken from March 15, as previous days mostly had 0 cases
-    CurrentDate = date.today()
-    Country_df_train=Country_df.ix['2020-03-15' : CurrentDate - datetime.timedelta(1)]
-
-    Country_df_predict = pd.DataFrame()
-    Country_df_predict['dateRep'] = pd.date_range(start = CurrentDate,
-                                                end = CurrentDate + datetime.timedelta(days),
-                                                freq ='D')
-
-    Country_df_predict.index = Country_df_predict['dateRep']
-
-
-
-    #Holt-Winters model for prediction
-    fit2 = ExponentialSmoothing(np.asarray((Country_df_train['cases']).astype(str).astype(float)),
-                                          seasonal_periods=7 ,trend='add', seasonal='add').fit()
-
-    #Predicting target column for given number of days
-    Country_df_predict['Exp'] = fit2.forecast(days + 1)
-
-    #Training and Predicted dataframes displayed
-    print(Country_df_train)
-    print(Country_df_predict)
+		if (i["countriesAndTerritories"]==code and ch!=0):
+			cases.append(int(i["cases"]))
+			date.append(i["dateRep"])
+			growth.append(None)
 
 
+	growth[-1] = cases[-1]
+	x = datetime.datetime(int(date[-1].split('/')[2]), int(date[-1].split('/')[1]), int(date[-1].split('/')[0]))+datetime.timedelta(days=1)
+	for i,j in zip(range(int(days)),case_prediction(code,days)):
+		date.append(x.strftime("%d/%m/%Y"))
+		x = datetime.datetime(int(date[-1].split('/')[2]), int(date[-1].split('/')[1]), int(date[-1].split('/')[0]))+datetime.timedelta(days=1)
+		cases.append(None)
+		growth.append(j)
 
-    #Plotting graph
-    plt.figure(figsize=(16, 8))
-    plt.plot(Country_df_train['cases'].astype(str).astype(float), color='blue', lw=2)
-    plt.plot(Country_df_predict['Exp'], color='orange', lw=2)
-    plt.xlabel("Day_Count")
-    plt.ylabel("No of cases")
-    x1,x2,y1,y2 = plt.axis()
-    plt.axis((x1,x2,0,250))
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
-    plt.gcf().autofmt_xdate()
-    plt.show()
+	total=0
+	for i in cases:
+		if i != None:
+			total+=i
+	for i in growth:
+		if i != None:
+			total+=i
 
-
-#Sample call for 15 days
-case_prediction("India",15)
-
-
-#"$%.2f"|format(543921.9354)
+	return JsonResponse({"cases":cases,"growth":growth,"date":date,"total":f"{total:,d}"})
